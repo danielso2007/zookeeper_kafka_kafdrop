@@ -1,0 +1,109 @@
+version: '3.7'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: "zookeeper"
+    hostname: "zookeeper"
+    restart: "always"
+    networks: 
+      - broker-kafka
+    ports:
+      - "22181:22181"
+    environment:
+        ZOO_MY_ID: 1
+        ZOO_PORT: 22181
+        ZOO_SERVERS: server.1=zookeeper:2888:3888
+        ZOOKEEPER_SERVER_ID: 1
+        ZOOKEEPER_CLIENT_PORT: 22181
+        ZOOKEEPER_TICK_TIME: 2000
+        ZOOKEEPER_INIT_LIMIT: 5
+        ZOOKEEPER_SYNC_LIMIT: 2
+    volumes:
+      - ./data/zookeeper/data:/data
+      - ./data/zookeeper/datalog:/datalog
+  kafka-node-1:
+    image: confluentinc/cp-kafka:latest
+    container_name: "kafka-node-1"
+    hostname: "kafka-node-1"
+    restart: "no"
+    networks: 
+      - broker-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./data/kafka1/data:/var/lib/kafka/data
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-1:9191,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9091
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      BOOTSTRAP_SERVERS: kafka-node-1:9191,kafka-node-2:9192,kafka-node-1:9193
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+  kafka-node-2:
+    image: confluentinc/cp-kafka:latest
+    container_name: "kafka-node-2"
+    hostname: "kafka-node-2"
+    restart: "no"
+    networks: 
+      - broker-kafka
+    depends_on:
+      - zookeeper
+      - kafka-node-1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-2:9192,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      BOOTSTRAP_SERVERS: kafka-node-1:9191,kafka-node-2:9192,kafka-node-1:9193
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+  kafka-node-3:
+    image: confluentinc/cp-kafka:latest
+    container_name: "kafka-node-3"
+    hostname: "kafka-node-3"
+    restart: "no"
+    networks: 
+      - broker-kafka
+    depends_on:
+      - zookeeper
+      - kafka-node-1
+      - kafka-node-2
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-3:9193,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      BOOTSTRAP_SERVERS: kafka-node-1:9191,kafka-node-2:9192,kafka-node-1:9193
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: "kafdrop"
+    hostname: "kafdrop"
+    restart: "no"
+    networks: 
+      - broker-kafka
+    depends_on:
+      - kafka-node-1
+      - kafka-node-2
+      - kafka-node-3
+    ports:
+      - "19000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: kafka-node-1:9191,kafka-node-2:9192,kafka-node-3:9193
+networks: 
+  broker-kafka:
+    driver: bridge
