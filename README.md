@@ -1,8 +1,10 @@
-# zookeeper_kafka_kafdrop
+![Kafka](https://kafka.apache.org/images/logo.png)
+
+# Zookeeper kafka kafdrop
 
 Projeto de estudo do Kafka com docker.
 
-# Documentação e exemplos
+## Documentação e exemplos
 
 * [Apache Kafka](https://kafka.apache.org/)
 * [Apache Kafka Desktop Client](https://www.conduktor.io/) 
