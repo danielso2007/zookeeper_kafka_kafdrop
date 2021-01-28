@@ -3,6 +3,11 @@
 /data/*
 # Log file
 *.log
+*/.idea
+*.iml
+# Default ignored files
+/shelf/
+/workspace.xml
 
 # BlueJ files
 *.ctxt
