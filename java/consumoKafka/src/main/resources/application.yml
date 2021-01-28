@@ -1,0 +1,21 @@
+servidores: "localhost:9092,localhost:9093,localhost:9094"
+debug: ${DEBUG_LOG:false}
+trace: ${TRACE_LOG:false}
+logging:
+   level:
+      org.springframework.test.context.support: OFF
+      org.springframework.context.annotation: INFO
+      org.springframework.test: OFF
+      org.apache.kafka.clients: OFF
+      o.a.kafka.common.utils: OFF
+      o.a.kafka.common.utils.AppInfoParser: OFF
+server:
+   port: ${SERVER_PORT_kafka_CONSUMO:8182}
+   compression:
+      enabled: true
+      min-response-size: 1
+spring:
+   profiles:
+      active: dev
+   application:
+      name: '@projet.artifactId@'

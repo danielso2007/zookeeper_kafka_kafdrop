@@ -17,4 +17,13 @@ Projeto de estudo do Kafka com docker.
 * [Apache ZooKeeper](https://zookeeper.apache.org/)
   * O ZooKeeper é um serviço centralizado para manter informações de configuração, nomenclatura, fornecer sincronização distribuída e fornecer serviços de grupo. 
 
+## Executando exemplo java
 
+### Envio:
+* Envio 1:
+  * ```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8001```
+* Envio 2:
+  * ```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8002```
+
+### Consumo:
+```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9001```
