@@ -23,7 +23,7 @@ public class EnvioKafkaApplication implements CommandLineRunner {
     @Value("${servidores}")
     private String servidores;
     
-    private static String[] ALFA = {"A","B","C","D","E","F","G","H","I","J"};
+    private static String[] ALFA = {"A","B","C","D","E","F","G","H","I","J","L","M","N","O","P","Q","R","S","T","U","V","X","Y","W","Z","@","#","&"};
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -38,7 +38,7 @@ public class EnvioKafkaApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         int count = 1;
         Random random = new Random();
-        int randomWithNextInt = random.nextInt(10 - 0)  + 0;
+        int randomWithNextInt = random.nextInt(28);
         String servidor = ALFA[randomWithNextInt];
         while (true) {
             mensagem(count++, servidor);
@@ -46,9 +46,9 @@ public class EnvioKafkaApplication implements CommandLineRunner {
     }
     
     private void mensagem(int count, String servidor) throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(300);
         Properties properties = new Properties();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servidores);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 

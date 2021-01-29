@@ -1,12 +1,13 @@
-servidores: "localhost:9092,localhost:9093,localhost:9094"
+servidores: "localhost:9091,localhost:9092,localhost:9093"
 debug: ${DEBUG_LOG:false}
 trace: ${TRACE_LOG:false}
 logging:
    level:
+      root: ERROR
       org.springframework.test.context.support: OFF
-      org.springframework.context.annotation: INFO
+      org.springframework.context.annotation: ERROR
       org.springframework.test: OFF
-      org.apache.kafka.clients: OFF
+      org.apache.kafka.clients: WARN
       o.a.kafka.common.utils: OFF
       o.a.kafka.common.utils.AppInfoParser: OFF
 server:
