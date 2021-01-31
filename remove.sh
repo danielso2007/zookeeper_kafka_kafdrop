@@ -20,6 +20,9 @@ NC='\033[0m' # No Color
 echo -e "${Yellow}Removendo docker-compose...${NC}"
 docker-compose stop
 docker-compose rm
-sleep 5
-docker ps
+sleep 3
+echo -e "${Yellow}listando docker...${NC}"
+docker-compose ps
+echo -e "${Yellow}Removendo pasta data...${NC}"
 rm -rf data
+ls -la

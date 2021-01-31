@@ -16,6 +16,19 @@ Light_Cyan='\033[1;36m'
 Light_Gray='\033[0;37m'
 White='\033[1;37m'
 NC='\033[0m' # No Color
+SERVICE_NAME=zookeeper
+
+if [[ !($(docker images | grep haproxy-kafka-cluster)) ]]; then
+    echo -e "${RED}Imagem haproxy-kafka-cluster não existe. Criar nova imagem...${NC}"
+    ./create-haproxy-rabbitmq-cluster.sh
+fi
+
+if [ -z `docker-compose ps -q ${SERVICE_NAME}` ] || [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q ${SERVICE_NAME})` ]; then
+  echo -e "${Yellow}No, it's not running. continuar...${NC}"
+else
+  echo -e "${Yellow}Serviço já em execução!${NC}"
+  exit 0
+fi
 
 DIR="data"
 if [ ! -d "$DIR" ]; then
@@ -45,4 +58,5 @@ fi
 echo -e "${Yellow}Iniciando docker-compose...${NC}"
 docker-compose up -d
 sleep 5
-docker ps
+docker-compose ps
+ls -la
