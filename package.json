@@ -1,0 +1,23 @@
+{
+  "name": "zookeeper_kafka_kafdrop",
+  "version": "0.1.0",
+  "description": "Estudo de kafka e docker.",
+  "scripts": {
+    "release": "standard-version"
+  },
+  "git": "https://github.com/danielso2007/zookeeper_kafka_kafdrop",
+  "keywords": [
+    "Postgres",
+    "database",
+    "Pgadmin4",
+    "docker",
+    "sql",
+    "psql",
+    "pgsql"
+  ],
+  "author": "Daniel Oliveira",
+  "license": "ISC",
+  "dependencies": {
+    "standard-version": "^9.1.0"
+  }
+}
