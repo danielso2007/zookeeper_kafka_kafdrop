@@ -4,20 +4,18 @@ services:
     image: confluentinc/cp-zookeeper:latest
     container_name: "zookeeper"
     hostname: "zookeeper"
-    restart: "always"
+    restart: "no"
     networks: 
       - broker-kafka
-    ports:
-      - "22181:22181"
     environment:
         ZOO_MY_ID: 1
-        ZOO_PORT: 22181
-        ZOO_SERVERS: server.1=zookeeper:2888:3888
+        ZOO_PORT: ${ZOOKEEPER_PORT}
+        ZOO_SERVERS: server.1=zookeeper:2888:3888;zookeeper:${ZOOKEEPER_PORT}
         ZOOKEEPER_SERVER_ID: 1
-        ZOOKEEPER_CLIENT_PORT: 22181
-        ZOOKEEPER_TICK_TIME: 2000
-        ZOOKEEPER_INIT_LIMIT: 5
-        ZOOKEEPER_SYNC_LIMIT: 2
+        ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_PORT}
+        ZOOKEEPER_TICK_TIME: 1000
+        ZOOKEEPER_INIT_LIMIT: 15
+        ZOOKEEPER_SYNC_LIMIT: 10
     volumes:
       - ./data/zookeeper/data:/data
       - ./data/zookeeper/datalog:/datalog
@@ -25,100 +23,109 @@ services:
     image: confluentinc/cp-kafka:latest
     container_name: "kafka-node-1"
     hostname: "kafka-node-1"
-    restart: "always"
+    restart: "no"
+    ports:
+      - "${KAFKA_NODE_1_PORT}:9191"
     networks: 
       - broker-kafka
+    links:
+      - "zookeeper:zookeeper"
     depends_on:
       - zookeeper
-    ports:
-      - "9191:9092"
     volumes:
       - ./data/kafka1/data:/var/lib/kafka/data
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-1:9092,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9191
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:${ZOOKEEPER_PORT}"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-1:9092,PLAINTEXT_HOST://localhost:9191
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${OFFSETS_TOPIC_REPLICATION_FACTOR}
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: ${GROUP_INITIAL_REBALANCE_DELAY_MS}
+      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-3:9092
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
   kafka-node-2:
     image: confluentinc/cp-kafka:latest
     container_name: "kafka-node-2"
     hostname: "kafka-node-2"
-    restart: "always"
+    restart: "no"
+    ports:
+      - "${KAFKA_NODE_2_PORT}:9192"
     networks: 
       - broker-kafka
-    depends_on:
-      - kafka-node-1
-    ports:
-      - "9192:9092"
+    links:
+      - "zookeeper:zookeeper"
+    volumes:
+      - ./data/kafka2/data:/var/lib/kafka/data
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-2:9092,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9192
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:${ZOOKEEPER_PORT}"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-2:9092,PLAINTEXT_HOST://localhost:9192
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${OFFSETS_TOPIC_REPLICATION_FACTOR}
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: ${GROUP_INITIAL_REBALANCE_DELAY_MS}
+      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-3:9092
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
   kafka-node-3:
     image: confluentinc/cp-kafka:latest
     container_name: "kafka-node-3"
     hostname: "kafka-node-3"
-    restart: "always"
+    restart: "no"
+    ports:
+      - "${KAFKA_NODE_3_PORT}:9193"
     networks: 
       - broker-kafka
-    depends_on:
-      - kafka-node-1
-      - kafka-node-2
-    ports:
-      - "9193:9092"
+    links:
+      - "zookeeper:zookeeper"
+    volumes:
+      - ./data/kafka3/data:/var/lib/kafka/data
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:22181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-3:9092,PLAINTEXT_HOST://${DOCKER_HOST_IP:-127.0.0.1}:9193
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:${ZOOKEEPER_PORT}"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-node-3:9092,PLAINTEXT_HOST://localhost:9193
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${OFFSETS_TOPIC_REPLICATION_FACTOR}
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: ${GROUP_INITIAL_REBALANCE_DELAY_MS}
+      BOOTSTRAP_SERVERS: kafka-node-1:9092,kafka-node-2:9092,kafka-node-3:9092
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     container_name: "kafdrop"
     hostname: "kafdrop"
     restart: "always"
+    ports:
+      - "${KAFDROP_PORT}:9000"
     networks: 
       - broker-kafka
     depends_on:
       - zookeeper
       - kafka-node-1
-      - kafka-node-2
-      - kafka-node-3
-    ports:
-      - "19000:9000"
+    links:
+      - "zookeeper:zookeeper"
+      - "kafka-node-1:kafka-node-1"
+      - "kafka-node-2:kafka-node-2"
+      - "kafka-node-3:kafka-node-3"
     environment:
       KAFKA_BROKERCONNECT: kafka-node-1:9092,kafka-node-2:9092,kafka-node-3:9092
   haproxy-kafka:
-    image: haproxy-kafka-cluster:2.3.1
+    image: ${HAPROXY_KAFKA_NAME}:${HAPROXY_KAFKA_VERSION}
     container_name: haproxy-kafka
     hostname: haproxy-kafka
     ports:
-      - "9092:9092"
-      - "1936:1936"
+      - "${HAPROXY_PORT}:${HAPROXY_PORT}"
+      - "${HAPROXY_PORT_MANAGER}:1936"
     links:
-      - kafka-node-1:kafka-node-1
-      - kafka-node-2:kafka-node-2
-      - kafka-node-3:kafka-node-3
+      - "kafka-node-1:kafka-node-1"
+      - "kafka-node-2:kafka-node-2"
+      - "kafka-node-3:kafka-node-3"
     depends_on:
       - zookeeper
       - kafka-node-1
-      - kafka-node-2
-      - kafka-node-3
     networks:
       - broker-kafka
 networks: 

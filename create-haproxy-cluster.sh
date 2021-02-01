@@ -16,13 +16,15 @@ LIGHT_CYAN='\033[1;36m'
 LIGHT_GRAY='\033[0;37m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
+VERSION=2.3.4
+NAME_IMAGE=haproxy-kafka-cluster
 
 function install_image() {
-    echo -e "${YELLOW}Removendo imagem haproxy-rabbitmq-cluster...${NC}"
-    docker image rm haproxy-kafka-cluster:2.3.1
-    echo -e "${YELLOW}Criando imagem haproxy-rabbitmq-cluster...${NC}"
+    echo -e "${YELLOW}Removendo imagem ${NAME_IMAGE}...${NC}"
+    docker image rm ${NAME_IMAGE}:${VERSION}
+    echo -e "${YELLOW}Criando imagem ${NAME_IMAGE}...${NC}"
     cd images-haproxy
-    docker build -t haproxy-kafka-cluster:2.3.1 .
+    docker build -t ${NAME_IMAGE}:${VERSION} .
 }
 
 if [[ $(systemctl --type=service | grep 'docker') ]]; then
