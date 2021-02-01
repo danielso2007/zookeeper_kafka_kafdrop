@@ -29,5 +29,5 @@ echo -e "${Yellow}Removendo pasta data...${NC}"
 rm -rf data
 ls -la
 
-echo -e "${Yellow}Removendo imagem ${NAME_IMAGE}:${VERSION}...${NC}"
-docker rmi ${NAME_IMAGE}:${VERSION}
+# echo -e "${Yellow}Removendo imagem ${NAME_IMAGE}:${VERSION}...${NC}"
+# docker rmi ${NAME_IMAGE}:${VERSION}

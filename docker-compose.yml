@@ -104,9 +104,7 @@ services:
       - broker-kafka
     depends_on:
       - zookeeper
-      - kafka-node-1
     links:
-      - "zookeeper:zookeeper"
       - "kafka-node-1:kafka-node-1"
       - "kafka-node-2:kafka-node-2"
       - "kafka-node-3:kafka-node-3"
@@ -123,9 +121,6 @@ services:
       - "kafka-node-1:kafka-node-1"
       - "kafka-node-2:kafka-node-2"
       - "kafka-node-3:kafka-node-3"
-    depends_on:
-      - zookeeper
-      - kafka-node-1
     networks:
       - broker-kafka
 networks: 
