@@ -1,4 +1,4 @@
-servidores: "localhost:9091,localhost:9092,localhost:9093"
+servidores: "localhost:9090"
 debug: ${DEBUG_LOG:false}
 trace: ${TRACE_LOG:false}
 logging:

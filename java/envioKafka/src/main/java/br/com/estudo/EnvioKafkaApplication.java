@@ -46,9 +46,9 @@ public class EnvioKafkaApplication implements CommandLineRunner {
     }
     
     private void mensagem(int count, String servidor) throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(300);
+        TimeUnit.MILLISECONDS.sleep(200);
         Properties properties = new Properties();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servidores);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
@@ -57,8 +57,8 @@ public class EnvioKafkaApplication implements CommandLineRunner {
         try (KafkaProducer<String, String> producer = 
                 new KafkaProducer<>(properties)) {
             ProducerRecord<String, String> record = 
-                    new ProducerRecord<>("testejava", msg);
-            logger.info(String.format("Enviando --> %s", msg));
+                new ProducerRecord<>("testejava", msg);
+            logger.info(String.format("Send--> %s", msg));
             producer.send(record);
         }
     }

@@ -42,7 +42,7 @@ public class ConsumoKafkaApplication implements CommandLineRunner {
     }
     
     private void consumo() throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(600);
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servidores);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
@@ -59,7 +59,7 @@ public class ConsumoKafkaApplication implements CommandLineRunner {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
                 
                 for (ConsumerRecord<String, String> record : records) {
-                    logger.info(String.format("Mensagem recebida --> %s", record.value()));
+                    logger.info(String.format("Receive--> %s", record.value()));
                 }
             }
         }
