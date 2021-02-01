@@ -17,10 +17,11 @@ Light_Gray='\033[0;37m'
 White='\033[1;37m'
 NC='\033[0m' # No Color
 SERVICE_NAME=zookeeper
+NAME_IMAGE=haproxy-kafka-cluster
 
-if [[ !($(docker images | grep haproxy-kafka-cluster)) ]]; then
-    echo -e "${RED}Imagem haproxy-kafka-cluster não existe. Criar nova imagem...${NC}"
-    ./create-haproxy-rabbitmq-cluster.sh
+if [[ !($(docker images | grep ${NAME_IMAGE})) ]]; then
+    echo -e "${RED}Imagem ${NAME_IMAGE} não existe. Criar nova imagem...${NC}"
+    ./create-haproxy-cluster.sh
 fi
 
 if [ -z `docker-compose ps -q ${SERVICE_NAME}` ] || [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q ${SERVICE_NAME})` ]; then
@@ -32,6 +33,10 @@ fi
 
 DIR="data"
 if [ ! -d "$DIR" ]; then
+    echo -e "${Yellow}Criando pastas de volume do haproxy...${NC}"
+
+    mkdir -p data/haproxy
+
     echo -e "${Yellow}Criando pastas de volume do zookeeper...${NC}"
 
     mkdir -p data/zookeeper/data
@@ -53,6 +58,10 @@ if [ ! -d "$DIR" ]; then
     chown -R 1000:1000 data/kafka1/data
     chown -R 1000:1000 data/kafka2/data
     chown -R 1000:1000 data/kafka3/data
+
+    echo -e "${Yellow}Permissão 1000 para as pastas de volume do haproxy...${NC}"
+
+    chown -R 1000:1000 data/haproxy
 fi
 
 echo -e "${Yellow}Iniciando docker-compose...${NC}"
