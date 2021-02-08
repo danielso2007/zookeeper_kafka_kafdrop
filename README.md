@@ -2,7 +2,7 @@
 
 # Zookeeper kafka kafdrop
 
-Projeto de estudo do Kafka com docker.
+Projeto de estudo do Kafka com docker. Uma documentação básica ver : [DOC.md](DOC.md).
 
 ## Documentação e exemplos
 
@@ -11,7 +11,7 @@ Projeto de estudo do Kafka com docker.
 * [Apache Kafka Desktop Client](https://www.conduktor.io/)
   * GUI sobre o ecossistema Kafka, para tornar o desenvolvimento e o gerenciamento de clusters Apache Kafka o mais fácil possível.
 * [Kafdrop – Kafka Web UI](https://github.com/obsidiandynamics/kafdrop)
-  * Kafdrop é uma IU da web para visualizar os tópicos do Kafka e navegar pelos grupos de consumidores. A ferramenta exibe informações como corretores, tópicos, partições, consumidores e permite que você visualize mensagens.
+  * Kafdrop é uma IU da web para visualizar os tópicos do Kafka e navegar pelos grupos de consumidores. A ferramenta exibe informações como brokers, tópicos, partições, consumidores e permite que você visualize mensagens.
 * [kafka-stack-docker-compose](https://github.com/simplesteph/kafka-stack-docker-compose)
   * Exemplo de criação de docker-compose de imagens kafka.
 * [Apache ZooKeeper](https://zookeeper.apache.org/)
@@ -21,7 +21,7 @@ Projeto de estudo do Kafka com docker.
 
 ### Envio:
 * Envio 1:
-  * ```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8001```
+```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8001```
 * Envio 2:
   * ```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8002```
 
