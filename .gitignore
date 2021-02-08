@@ -8,6 +8,7 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+target/
 
 # BlueJ files
 *.ctxt
