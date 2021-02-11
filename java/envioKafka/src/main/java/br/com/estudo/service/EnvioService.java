@@ -28,8 +28,9 @@ public class EnvioService {
 
     public void enviarMensagem() throws InterruptedException {
         int count = 1;
+        int server = new Random().nextInt(25);
         while (count > 0) {
-            enviarKafka(count++, ALFA[new Random().nextInt(25)]);
+            enviarKafka(count++, ALFA[server]);
         }
     }
 
