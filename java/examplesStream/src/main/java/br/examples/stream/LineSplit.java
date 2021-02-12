@@ -10,6 +10,9 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 
+/**
+ * Pega os dados de streams-plaintext-input, quebra as palavras e passa para streams-linesplit-output.
+ */
 public class LineSplit {
 
     public static void main(String[] args) throws Exception {
@@ -28,7 +31,7 @@ public class LineSplit {
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
         final CountDownLatch latch = new CountDownLatch(1);
-
+        System.out.println(topology.describe());
         // attach shutdown handler to catch control-c
         Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
             @Override

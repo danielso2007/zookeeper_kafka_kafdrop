@@ -16,7 +16,5 @@ Light_Cyan='\033[1;36m'
 Light_Gray='\033[0;37m'
 White='\033[1;37m'
 NC='\033[0m' # No Color
-portDefault=8901
-
-echo -e "${Yellow}Criar tópicos streams-plaintext-input e streams-wordcount-output${NC}"
-mvn exec:java -Dexec.mainClass=br.examples.stream.WordCount
+echo -e "${Yellow}Compilando....${NC}"
+mvn -q clean package

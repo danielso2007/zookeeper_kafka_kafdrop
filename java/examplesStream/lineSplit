@@ -18,5 +18,5 @@ White='\033[1;37m'
 NC='\033[0m' # No Color
 portDefault=8901
 
-echo -e "${Yellow}Criar tópicos streams-plaintext-input e streams-pipe-output${NC}"
-mvn exec:java -Dexec.mainClass=br.examples.stream.Pipe
+echo -e "${Yellow}Criar tópicos streams-plaintext-input e streams-linesplit-output${NC}"
+mvn exec:java -Dexec.mainClass=br.examples.stream.LineSplit

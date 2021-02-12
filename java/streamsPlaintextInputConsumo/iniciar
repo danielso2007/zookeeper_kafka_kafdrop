@@ -18,5 +18,12 @@ White='\033[1;37m'
 NC='\033[0m' # No Color
 portDefault=8901
 
-echo -e "${Yellow}Criar tópicos streams-plaintext-input e streams-wordcount-output${NC}"
-mvn exec:java -Dexec.mainClass=br.examples.stream.WordCount
+if [ -d $1 ]
+then
+    echo -e "${Yellow}Usando porta default ${portDefault}.${NC}"
+else
+    portDefault=$1
+    echo -e "${Yellow}Usando porta ${portDefault}.${NC}"
+fi
+echo -e "${Yellow}Iniciando....${NC}"
+mvn -q spring-boot:run -Dspring-boot.run.arguments=--server.port=${portDefault}

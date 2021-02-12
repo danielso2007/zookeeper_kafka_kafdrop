@@ -9,6 +9,9 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 
+/**
+ * Todas as mensagem criadas no tópico streams-plaintext-input são movidos para streams-pipe-output.
+ */
 public class Pipe {
 
     public static void main(String[] args) throws Exception {
@@ -25,7 +28,7 @@ public class Pipe {
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
         final CountDownLatch latch = new CountDownLatch(1);
-
+        System.out.println(topology.describe());
         // attach shutdown handler to catch control-c
         Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
             @Override

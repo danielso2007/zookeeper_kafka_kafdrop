@@ -1,0 +1,4 @@
+
+
+Teste de envio de mensagem ao kafka de registros para o Streams
+
