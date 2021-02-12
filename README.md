@@ -4,6 +4,15 @@
 
 Projeto de estudo do Kafka com docker. Uma documentação básica ver : [DOC.md](DOC.md).
 
+O projeto inicia com um (1) zookeeper para fazer serviço centralizado para manter informações de configuração entre os nós kafka criados pelo docker-compose. Serão criados 3 nós kafka distribuídos onde os tópicos são replicados entre eles, sendo um (1) líder (controller) recebendo as informações e os outros recebendo a replicação. Caso o nó principal caia, outro assumirar o controller e se tornará o líder.
+
+Para esse projeto, usamos o Kafdrop para interface web de visualização e criação de tópicos. Ao iniciar o docker, acessar o endereço: [http://localhost:1900/](http://localhost:1900/).
+
+Como teste e balanceamento de cargas, foi criado um container usando o proxy para balancear o acesso entre os nós kafka. O objetivo é manter apenas um (1) endereço e uma (1) porta de acesso dos projetos. Assim, ao configurar o projeto java para acessar o kafka, apenas um endereço e porta serão necessários informar, sendo responsabilidade do proxy balancear o acesso entre os nós kafka. Para acessar o haproxy (login: haproxy e password: haproxy): [http://localhost:1936/](http://localhost:1936/).
+
+## Cliente de desktop Apache Kafka
+
+GUI sobre o ecossistema Kafka, para tornar o desenvolvimento e o gerenciamento de clusters Apache Kafka o mais fácil possível. Recomendo usar o [conduktor.io](https://www.conduktor.io/) para o gerenciamento e monitoramento dos tópicos e grupos criados nos kafkas.
 ## Documentação e exemplos
 
 * [Apache Kafka](https://kafka.apache.org/)
@@ -17,23 +26,39 @@ Projeto de estudo do Kafka com docker. Uma documentação básica ver : [DOC.md]
 * [Apache ZooKeeper](https://zookeeper.apache.org/)
   * O ZooKeeper é um serviço centralizado para manter informações de configuração, nomenclatura, fornecer sincronização distribuída e fornecer serviços de grupo. 
 
+## Iniciando o container Docker
+
+Para iniciar o projeto, execute os comandos abaixo:
+
+* ```./iniciar.sh``` - Ao iniciar o projeto, o script verifica se a imagem haproxy foi criado, caso negativo, a imagem será criada na primeira chamada. A segunda ação do script será criar a pasta ```data``` contendo o volume de cada container criado, modificando a permissão para permitir acesso e modificação. E no final, é iniciado os container usando o docker-compose.
+
+* ```./stop.sh``` - Para todos os container.
+
+* ```./remove.sh``` - Para e remover todos os containers docker e seus volumes.
+
 ## Executando exemplo 01 java
 
-Para exemplos java, entrar na pasta `java`.
+Para exemplos java, entrar na pasta `java`. Inicialmente, criar o tópico no endereço [localhost:1900/](http://localhost:1900/) com os dados abaixo:
+* Clicar em ```+ New```;
+* **Topic name**: teste_java
+* **Number of partitions**: 15
+* **Replication factor**: 3
+
+Para compilar o projeto, execute o script ```./clean```. Podem ser executados quandos serviços você quiser, desde que não sejam repetidos as portas. O mesmo para os consumidores.
 
 ### Envio (java/envioKafka):
 
 * Envio 1:
 
-```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8001```
+```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8801```
 
 * Envio 2:
 
-```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8002```
+```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8802```
 
 ### Consumo (java/consumoKafka):
 
-```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9001```
+```mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9901```
 
 ## Executando exemplo 02 java
 
