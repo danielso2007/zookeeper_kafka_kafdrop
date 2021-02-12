@@ -10,6 +10,10 @@ Para esse projeto, usamos o Kafdrop para interface web de visualização e cria�
 
 Como teste e balanceamento de cargas, foi criado um container usando o proxy para balancear o acesso entre os nós kafka. O objetivo é manter apenas um (1) endereço e uma (1) porta de acesso dos projetos. Assim, ao configurar o projeto java para acessar o kafka, apenas um endereço e porta serão necessários informar, sendo responsabilidade do proxy balancear o acesso entre os nós kafka. Para acessar o haproxy (login: haproxy e password: haproxy): [http://localhost:1936/](http://localhost:1936/).
 
+<p align="center">
+  <img src="images/kafka_estudo.png" alt="Kafka">
+</p>
+
 ## Cliente de desktop Apache Kafka
 
 GUI sobre o ecossistema Kafka, para tornar o desenvolvimento e o gerenciamento de clusters Apache Kafka o mais fácil possível. Recomendo usar o [conduktor.io](https://www.conduktor.io/) para o gerenciamento e monitoramento dos tópicos e grupos criados nos kafkas.
