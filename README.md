@@ -78,9 +78,47 @@ Esse exemplo consiste no envio de um objeto java serializado e o consumo desseri
 
 ## WRITE A KAFKA STREAMS APPLICATION
 
-```mvn exec:java -Dexec.mainClass=br.examples.stream.Pipe```
-```mvn exec:java -Dexec.mainClass=br.examples.stream.LineSplit```
-```mvn exec:java -Dexec.mainClass=br.examples.stream.WordCount```
+Kafka Streams é uma biblioteca cliente para processamento e análise de dados armazenados no Kafka. Ele se baseia em conceitos importantes de processamento de fluxo, como distinção adequada entre tempo de evento e tempo de processamento, suporte a janelas e gerenciamento simples, mas eficiente, e consulta em tempo real do estado do aplicativo.
+
+O Kafka Streams tem uma barreira baixa de entrada : você pode escrever e executar rapidamente uma prova de conceito em pequena escala em uma única máquina; e você só precisa executar instâncias adicionais de seu aplicativo em várias máquinas para escalar para cargas de trabalho de produção de alto volume. O Kafka Streams lida de forma transparente com o balanceamento de carga de várias instâncias do mesmo aplicativo, aproveitando o modelo de paralelismo de Kafka.
+
+### Topologia de processamento de fluxo
+
+* Um fluxo é a abstração mais importante fornecida pelo Kafka Streams: ele representa um conjunto de dados ilimitado e continuamente atualizado. Um fluxo é uma sequência ordenada, reproduzível e tolerante a falhas de registros de dados imutáveis, em que um registro de dados é definido como um par de valor-chave.
+* Um aplicativo de processamento de fluxo é qualquer programa que faz uso da biblioteca Kafka Streams. Ele define sua lógica computacional por meio de uma ou mais topologias de processador , onde uma topologia de processador é um gráfico de processadores de fluxo (nós) que são conectados por fluxos (bordas).
+* Um processador de fluxo é um nó na topologia do processador; ele representa uma etapa de processamento para transformar dados em fluxos recebendo um registro de entrada por vez de seus processadores upstream na topologia, aplicando sua operação a ele e pode, subsequentemente, produzir um ou mais registros de saída para seus processadores downstream.
+
+Existem dois processadores especiais na topologia:
+
+* Processador de origem : um processador de origem é um tipo especial de processador de fluxo que não possui nenhum processador upstream. Ele produz um fluxo de entrada para sua topologia a partir de um ou vários tópicos do Kafka, consumindo registros desses tópicos e os encaminhando para seus processadores down-stream.
+* Processador dissipador : um processador dissipador é um tipo especial de processador de fluxo que não possui processadores down-stream. Ele envia todos os registros recebidos de seus processadores up-stream para um tópico Kafka especificado.
+
+### Aplicativo Streams: Pipe
+
+Nesse aplicativo criamos uma topology ```final StreamsBuilder builder = new StreamsBuilder();``` e criamos um fluxo de origem a partir de um tópico Kafka denominado ```streams-plaintext-input```. É necessário criar anteriormente no seu kafka o tópico ```streams-plaintext-input```. O objetivo do aplicativo Pipe é escreve todos os registros do tópico ```streams-plaintext-input``` em outro tópico chamado: ```streams-pipe-output```. Para mais detalher, [ver aqui](https://kafka.apache.org/27/documentation/streams/tutorial#tutorial_code_pipe).
+
+<p align="center">
+  <img src="images/stream_pipe.png" alt="Kafka">
+</p>
+
+Para executar o aplicativo: ```mvn exec:java -Dexec.mainClass=br.examples.stream.Pipe```
+
+### Aplicativo Streams: Line Split
+
+Como cada registro do stream de origem é um String par de `chave-valore` digitados, vamos tratar a string de `valor` como uma linha de texto e dividi-la em palavras com um `FlatMapValuesoperador`. O operador tomará o fluxo fonte (source) como sua entrada e gerará um novo fluxo nomeado `words` processando cada registro de seu fluxo de origem em ordem e quebrando sua string de `valor` em uma lista de palavras e produzindo cada palavra como um novo registro para o fluxo words de saída. Este é um operador sem estado que não precisa rastrear nenhum registro recebido anteriormente ou resultados processados. E, finalmente, podemos escrever a palavra fluxo de volta em outro tópico Kafka, digamos `streams-linesplit-output`.
+
+<p align="center">
+  <img src="images/stream_linesplit.png" alt="Kafka">
+</p>
+
+Para executar o aplicativo: ```mvn exec:java -Dexec.mainClass=br.examples.stream.LineSplit```
+
+### Aplicativo Streams: Wordcount
+
+Adicionar alguns cálculos "stateful" à topologia, contando a ocorrência das palavras divididas do fluxo de texto de origem. Para fazer a agregação de contagem, temos primeiro de especificar que queremos codificar o fluxo na string de valor, ou seja, a palavra em caixa baixa, com um groupByoperador. Este operador gera um novo fluxo agrupado, que pode então ser agregado por um countoperador, que gera uma contagem em execução em cada uma das chaves agrupadas. Observe que o countoperador tem um `Materialized` parâmetro que especifica que a contagem em execução deve ser armazenada em um armazenamento de estado denominado `counts-store`.
+Também podemos escrever o countsfluxo do changelog do KTable de volta em outro tópico do Kafka, digamos `streams-wordcount-output`. Como o resultado é um fluxo de log de mudanças, o tópico de saída `streams-wordcount-output` deve ser configurado com compactação de log habilitada. Observe que desta vez o tipo de valor não é mais `String` mas `Long`, portanto, as classes de serialização padrão não são mais viáveis ​​para gravá-lo no Kafka. Precisamos fornecer métodos de serialização substituídos para `Long` tipos, caso contrário, uma exceção de tempo de execução será lançada. Observe que, para ler o fluxo do log de alterações do tópico `streams-wordcount-output`, é necessário definir a desserialização do valor como `org.apache.kafka.common.serialization.LongDeserializer`.
+
+Para executar o aplicativo: ```mvn exec:java -Dexec.mainClass=br.examples.stream.WordCount```
 
 # Apache Kafka® é uma plataforma de streaming distribuída. O que exatamente isso significa?
 

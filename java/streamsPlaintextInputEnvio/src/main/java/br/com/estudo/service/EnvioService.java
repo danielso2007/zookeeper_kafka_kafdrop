@@ -52,7 +52,7 @@ public class EnvioService {
         }
 
         try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
-            ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, msg);
+            ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, "envio-stream", msg);
             String msgInf = String.format("Send--> %s", msg);
             logger.info(msgInf);
 
