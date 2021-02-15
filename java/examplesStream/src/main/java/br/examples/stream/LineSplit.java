@@ -9,13 +9,14 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.KStream;
 
 /**
  * Pega os dados de streams-plaintext-input, quebra as palavras e passa para streams-linesplit-output.
  */
 public class LineSplit {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-linesplit");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9090");
@@ -24,9 +25,9 @@ public class LineSplit {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        builder.<String, String>stream("streams-plaintext-input")
-                .flatMapValues(value -> Arrays.asList(value.split("\\W+")))
-                .to("streams-linesplit-output");
+        KStream<String, String> source = builder.stream("streams-plaintext-input");
+        KStream<String, String> words = source.flatMapValues(value -> Arrays.asList(value.split("\\W+")));
+        words.to("streams-linesplit-output");
 
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
