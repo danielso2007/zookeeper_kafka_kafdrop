@@ -1,6 +1,6 @@
 {
   "name": "zookeeper_kafka_kafdrop",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Estudo de kafka e docker.",
   "scripts": {
     "release": "standard-version"
