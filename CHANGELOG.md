@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/danielso2007/zookeeper_kafka_kafdrop/compare/v1.0.0...v1.0.1) (2021-03-01)
+
+
+### Bug Fixes
+
+* Correção do formato do yml. ([33c8200](https://github.com/danielso2007/zookeeper_kafka_kafdrop/commit/33c8200bee96e9aa897554ddc207a12a5247116e))
+* Correção na formação de comando shell. ([a0986c2](https://github.com/danielso2007/zookeeper_kafka_kafdrop/commit/a0986c20671a05b704dead93ff4630acd805f15d))
+* Removendo o MVN, pois não será necessário neste projeto. ([4d8cd39](https://github.com/danielso2007/zookeeper_kafka_kafdrop/commit/4d8cd39537c24f4eaa01cbaef6f95926c1ceb44b))
+
 ## 1.0.0 (2021-02-15)
 
 
