@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/danielso2007/zookeeper_kafka_kafdrop/badge)](https://www.codefactor.io/repository/github/danielso2007/zookeeper_kafka_kafdrop)
+
 ![Kafka](https://kafka.apache.org/images/logo.png)
 
 # Zookeeper kafka kafdrop
