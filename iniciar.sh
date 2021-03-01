@@ -24,7 +24,7 @@ if [[ !($(docker images | grep ${NAME_IMAGE})) ]]; then
     ./create-haproxy-cluster.sh
 fi
 
-if [ -z `docker-compose ps -q ${SERVICE_NAME}` ] || [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q ${SERVICE_NAME})` ]; then
+if [ -z $(docker-compose ps -q ${SERVICE_NAME}) ] || [ -z $(docker ps -q --no-trunc | grep $(docker-compose ps -q ${SERVICE_NAME})) ]; then
   echo -e "${Yellow}No, it's not running. continuar...${NC}"
 else
   echo -e "${Yellow}Serviço já em execução!${NC}"
